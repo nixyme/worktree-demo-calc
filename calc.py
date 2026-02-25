@@ -1,6 +1,7 @@
 """
-极简计算器 - feat/percent: 新增百分比运算
+极简计算器 - feat/sqrt: 新增平方根
 """
+import math
 
 def add(a, b):      return a + b
 def subtract(a, b): return a - b
@@ -8,20 +9,21 @@ def multiply(a, b): return a * b
 def divide(a, b):
     if b == 0: raise ValueError("除数不能为零")
     return a / b
-def percent(a):
-    """百分比: a / 100"""
-    return a / 100
+def sqrt(a):
+    """平方根"""
+    if a < 0: raise ValueError("不能对负数开平方根")
+    return math.sqrt(a)
 
 def main():
-    print("=== 极简计算器 v1.1 (新增百分比) ===")
-    print("支持: + - * /  |  输入 '50 %' 转换百分比")
+    print("=== 极简计算器 v1.1 (新增平方根) ===")
+    print("支持: + - * /  |  输入 'sqrt 16' 计算平方根")
     while True:
         expr = input("> ").strip()
         if expr.lower() == 'q': break
         try:
             parts = expr.split()
-            if len(parts) == 2 and parts[1] == '%':
-                print(f"= {percent(float(parts[0]))}")
+            if len(parts) == 2 and parts[0].lower() == 'sqrt':
+                print(f"= {sqrt(float(parts[1]))}")
             elif len(parts) == 3:
                 a, op, b = parts
                 a, b = float(a), float(b)
