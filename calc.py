@@ -1,36 +1,38 @@
 """
-极简计算器 - Git Worktree 演示项目
+极简计算器 - feat/batch: 新增批量计算（从文件读取）
 """
 
-def add(a, b):
-    return a + b
-
-def subtract(a, b):
-    return a - b
-
-def multiply(a, b):
-    return a * b
-
+def add(a, b):      return a + b
+def subtract(a, b): return a - b
+def multiply(a, b): return a * b
 def divide(a, b):
-    if b == 0:
-        raise ValueError("除数不能为零")
+    if b == 0: raise ValueError("除数不能为零")
     return a / b
 
+def calc_line(line):
+    a, op, b = line.strip().split()
+    a, b = float(a), float(b)
+    ops = {'+': add, '-': subtract, '*': multiply, '/': divide}
+    return ops[op](a, b)
+
 def main():
-    print("=== 极简计算器 v1.0 ===")
-    print("支持: + - * /")
+    print("=== 极简计算器 v1.1 (新增批量计算) ===")
+    print("支持: + - * /  |  输入 'batch 文件名' 批量计算")
     while True:
-        expr = input("输入表达式 (如 3 + 4) 或 q 退出: ").strip()
-        if expr.lower() == 'q':
-            break
+        expr = input("> ").strip()
+        if expr.lower() == 'q': break
+        if expr.lower().startswith('batch '):
+            fname = expr[6:].strip()
+            try:
+                with open(fname) as f:
+                    for line in f:
+                        if line.strip():
+                            print(f"{line.strip()} = {calc_line(line)}")
+            except FileNotFoundError:
+                print(f"文件不存在: {fname}")
+            continue
         try:
-            a, op, b = expr.split()
-            a, b = float(a), float(b)
-            if op == '+':   print(f"= {add(a, b)}")
-            elif op == '-': print(f"= {subtract(a, b)}")
-            elif op == '*': print(f"= {multiply(a, b)}")
-            elif op == '/': print(f"= {divide(a, b)}")
-            else:           print("不支持的运算符")
+            print(f"= {calc_line(expr)}")
         except Exception as e:
             print(f"错误: {e}")
 
