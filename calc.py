@@ -1,5 +1,5 @@
 """
-极简计算器 - feat/sqrt: 新增平方根
+极简计算器 - feat/batch: 新增批量计算（从文件读取）
 """
 import math
 
@@ -14,23 +14,30 @@ def sqrt(a):
     if a < 0: raise ValueError("不能对负数开平方根")
     return math.sqrt(a)
 
+def calc_line(line):
+    a, op, b = line.strip().split()
+    a, b = float(a), float(b)
+    ops = {'+': add, '-': subtract, '*': multiply, '/': divide}
+    return ops[op](a, b)
+
 def main():
-    print("=== 极简计算器 v1.1 (新增平方根) ===")
-    print("支持: + - * /  |  输入 'sqrt 16' 计算平方根")
+    print("=== 极简计算器 v1.1 (新增批量计算) ===")
+    print("支持: + - * /  |  输入 'batch 文件名' 批量计算")
     while True:
         expr = input("> ").strip()
         if expr.lower() == 'q': break
+        if expr.lower().startswith('batch '):
+            fname = expr[6:].strip()
+            try:
+                with open(fname) as f:
+                    for line in f:
+                        if line.strip():
+                            print(f"{line.strip()} = {calc_line(line)}")
+            except FileNotFoundError:
+                print(f"文件不存在: {fname}")
+            continue
         try:
-            parts = expr.split()
-            if len(parts) == 2 and parts[0].lower() == 'sqrt':
-                print(f"= {sqrt(float(parts[1]))}")
-            elif len(parts) == 3:
-                a, op, b = parts
-                a, b = float(a), float(b)
-                ops = {'+': add, '-': subtract, '*': multiply, '/': divide}
-                if op in ops: print(f"= {ops[op](a, b)}")
-                else: print("不支持的运算符")
-            else: print("格式错误")
+            print(f"= {calc_line(expr)}")
         except Exception as e:
             print(f"错误: {e}")
 
