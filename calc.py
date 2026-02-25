@@ -1,38 +1,36 @@
 """
-极简计算器 - Git Worktree 演示项目
+极简计算器 - feat/color: 新增彩色终端输出
 """
 
-def add(a, b):
-    return a + b
+GREEN  = "\033[92m"
+RED    = "\033[91m"
+YELLOW = "\033[93m"
+RESET  = "\033[0m"
 
-def subtract(a, b):
-    return a - b
-
-def multiply(a, b):
-    return a * b
-
+def add(a, b):      return a + b
+def subtract(a, b): return a - b
+def multiply(a, b): return a * b
 def divide(a, b):
-    if b == 0:
-        raise ValueError("除数不能为零")
+    if b == 0: raise ValueError("除数不能为零")
     return a / b
 
 def main():
-    print("=== 极简计算器 v1.0 ===")
+    print(f"{YELLOW}=== 极简计算器 v1.1 (彩色输出) ==={RESET}")
     print("支持: + - * /")
     while True:
-        expr = input("输入表达式 (如 3 + 4) 或 q 退出: ").strip()
-        if expr.lower() == 'q':
-            break
+        expr = input("> ").strip()
+        if expr.lower() == 'q': break
         try:
             a, op, b = expr.split()
             a, b = float(a), float(b)
-            if op == '+':   print(f"= {add(a, b)}")
-            elif op == '-': print(f"= {subtract(a, b)}")
-            elif op == '*': print(f"= {multiply(a, b)}")
-            elif op == '/': print(f"= {divide(a, b)}")
-            else:           print("不支持的运算符")
+            ops = {'+': add, '-': subtract, '*': multiply, '/': divide}
+            if op in ops:
+                result = ops[op](a, b)
+                print(f"{GREEN}= {result}{RESET}")
+            else:
+                print(f"{RED}不支持的运算符{RESET}")
         except Exception as e:
-            print(f"错误: {e}")
+            print(f"{RED}错误: {e}{RESET}")
 
 if __name__ == "__main__":
     main()
