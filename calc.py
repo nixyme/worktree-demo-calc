@@ -1,36 +1,32 @@
 """
-极简计算器 - Git Worktree 演示项目
+极简计算器 - feat/memory: 新增内存存储 (MS/MR/MC)
 """
 
-def add(a, b):
-    return a + b
-
-def subtract(a, b):
-    return a - b
-
-def multiply(a, b):
-    return a * b
-
+def add(a, b):      return a + b
+def subtract(a, b): return a - b
+def multiply(a, b): return a * b
 def divide(a, b):
-    if b == 0:
-        raise ValueError("除数不能为零")
+    if b == 0: raise ValueError("除数不能为零")
     return a / b
 
 def main():
-    print("=== 极简计算器 v1.0 ===")
-    print("支持: + - * /")
+    print("=== 极简计算器 v1.1 (新增内存存储) ===")
+    print("支持: + - * /  |  ms=存储 mr=读取 mc=清除")
+    memory = 0
     while True:
-        expr = input("输入表达式 (如 3 + 4) 或 q 退出: ").strip()
-        if expr.lower() == 'q':
-            break
+        expr = input("> ").strip().lower()
+        if expr == 'q': break
+        if expr == 'mr': print(f"内存: {memory}"); continue
+        if expr == 'mc': memory = 0; print("内存已清除"); continue
         try:
             a, op, b = expr.split()
             a, b = float(a), float(b)
-            if op == '+':   print(f"= {add(a, b)}")
-            elif op == '-': print(f"= {subtract(a, b)}")
-            elif op == '*': print(f"= {multiply(a, b)}")
-            elif op == '/': print(f"= {divide(a, b)}")
-            else:           print("不支持的运算符")
+            ops = {'+': add, '-': subtract, '*': multiply, '/': divide}
+            if op in ops:
+                result = ops[op](a, b)
+                print(f"= {result}")
+                if expr.startswith('ms'): memory = result; print(f"已存入内存: {memory}")
+            else: print("不支持的运算符")
         except Exception as e:
             print(f"错误: {e}")
 
