@@ -1,7 +1,12 @@
 """
-极简计算器 - feat/batch: 新增批量计算（从文件读取）
+极简计算器 - feat/color: 新增彩色终端输出
 """
 import math
+
+GREEN  = "\033[92m"
+RED    = "\033[91m"
+YELLOW = "\033[93m"
+RESET  = "\033[0m"
 
 def add(a, b):      return a + b
 def subtract(a, b): return a - b
@@ -21,25 +26,22 @@ def calc_line(line):
     return ops[op](a, b)
 
 def main():
-    print("=== 极简计算器 v1.1 (新增批量计算) ===")
-    print("支持: + - * /  |  输入 'batch 文件名' 批量计算")
+    print(f"{YELLOW}=== 极简计算器 v1.1 (彩色输出) ==={RESET}")
+    print("支持: + - * /")
     while True:
         expr = input("> ").strip()
         if expr.lower() == 'q': break
-        if expr.lower().startswith('batch '):
-            fname = expr[6:].strip()
-            try:
-                with open(fname) as f:
-                    for line in f:
-                        if line.strip():
-                            print(f"{line.strip()} = {calc_line(line)}")
-            except FileNotFoundError:
-                print(f"文件不存在: {fname}")
-            continue
         try:
-            print(f"= {calc_line(expr)}")
+            a, op, b = expr.split()
+            a, b = float(a), float(b)
+            ops = {'+': add, '-': subtract, '*': multiply, '/': divide}
+            if op in ops:
+                result = ops[op](a, b)
+                print(f"{GREEN}= {result}{RESET}")
+            else:
+                print(f"{RED}不支持的运算符{RESET}")
         except Exception as e:
-            print(f"错误: {e}")
+            print(f"{RED}错误: {e}{RESET}")
 
 if __name__ == "__main__":
     main()
